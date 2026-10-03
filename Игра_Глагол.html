@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Учимся играя — Глагол</title>
+
+<style>
+:root{
+  --bg:#070914;
+  --panel:rgba(18,22,43,.78);
+  --panel2:rgba(25,31,58,.72);
+  --text:#f4f7ff;
+  --muted:#9ca8c7;
+  --violet:#a970ff;
+  --cyan:#42e8ff;
+  --turquoise:#39f5c7;
+  --pink:#ff67c8;
+  --green:#4df0a5;
+  --red:#ff607c;
+  --yellow:#ffd76a;
+  --border:rgba(255,255,255,.11);
+  --shadow:0 20px 60px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+body{
+  overflow-x:hidden;
+}
+
+button{
+  font:inherit;
+}
+
+#space{
+  position:fixed;
+  inset:0;
+  z-index:-5;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(111,72,255,.18),transparent 28%),
+    radial-gradient(circle at 85% 25%,rgba(0,224,255,.12),transparent 25%),
+    radial-gradient(circle at 50% 100%,rgba(255,56,191,.10),transparent 30%),
+    #070914;
+}
+
+#stars{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  pointer-events:none;
+}
+
+.orb{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(2px);
+  pointer-events:none;
+  opacity:.35;
+  z-index:-3;
+  animation:floatOrb 12s ease-in-out infinite;
+}
+
+.orb.one{
+  width:260px;height:260px;
+  background:radial-gradient(circle,var(--violet),transparent 68%);
+  top:5%;left:-100px;
+}
+.orb.two{
+  width:300px;height:300px;
+  background:radial-gradient(circle,var(--cyan),transparent 68%);
+  right:-130px;top:38%;
+  animation-delay:-5s;
+}
+.orb.three{
+  width:220px;height:220px;
+  background:radial-gradient(circle,var(--pink),transparent 68%);
+  left:40%;bottom:-100px;
+  animation-delay:-8s;
+}
+
+@keyframes floatOrb{
+  0%,100%{transform:translate(0,0)}
+  50%{transform:translate(25px,-30px)}
+}
+
+.app{
+  width:min(1450px,94vw);
+  margin:auto;
+  padding:22px 0 40px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:18px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  width:58px;
+  height:58px;
+  border-radius:18px;
+  display:grid;
+  place-items:center;
+  font-size:30px;
+  background:linear-gradient(135deg,rgba(169,112,255,.25),rgba(66,232,255,.15));
+  border:1px solid rgba(169,112,255,.4);
+  box-shadow:0 0 35px rgba(169,112,255,.2);
+}
+
+.brand h1{
+  margin:0;
+  font-size:clamp(22px,3vw,32px);
+  letter-spacing:-.5px;
+}
+
+.brand p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.top-actions{
+  display:flex;
+  gap:10px;
+}
+
+.icon-btn,.restart-btn{
+  border:1px solid var(--border);
+  color:var(--text);
+  background:rgba(255,255,255,.06);
+  border-radius:13px;
+  padding:11px 15px;
+  cursor:pointer;
+  transition:.25s;
+}
+
+.icon-btn:hover,.restart-btn:hover{
+  border-color:rgba(66,232,255,.5);
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px rgba(66,232,255,.1);
+}
+
+.hud{
+  display:grid;
+  grid-template-columns:230px 1fr;
+  gap:18px;
+  margin-bottom:18px;
+}
+
+.score-card,.route-card,.glass{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:22px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
+}
+
+.score-card{
+  padding:18px 20px;
+}
+
+.score-label{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.score{
+  margin-top:3px;
+  font-size:28px;
+  font-weight:800;
+}
+
+.progress{
+  margin-top:12px;
+  height:9px;
+  background:rgba(255,255,255,.08);
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  border-radius:20px;
+  background:linear-gradient(90deg,var(--violet),var(--cyan),var(--turquoise));
+  box-shadow:0 0 18px rgba(66,232,255,.55);
+  transition:width .6s ease;
+}
+
+.route-card{
+  padding:15px 20px;
+}
+
+.route{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+}
+
+.route-step{
+  flex:1;
+  text-align:center;
+  position:relative;
+  color:#687493;
+  font-size:12px;
+}
+
+.route-step:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  height:2px;
+  background:rgba(255,255,255,.08);
+  left:58%;
+  right:-42%;
+  top:18px;
+}
+
+.route-dot{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  margin:0 auto 7px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  font-weight:700;
+  position:relative;
+  z-index:2;
+}
+
+.route-step.active{
+  color:var(--cyan);
+}
+
+.route-step.active .route-dot{
+  border-color:var(--cyan);
+  background:rgba(66,232,255,.12);
+  box-shadow:0 0 22px rgba(66,232,255,.35);
+}
+
+.route-step.done{
+  color:var(--green);
+}
+
+.route-step.done .route-dot{
+  background:rgba(77,240,165,.13);
+  border-color:var(--green);
+  color:var(--green);
+}
+
+.main{
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:18px;
+}
+
+.mentor{
+  padding:22px;
+  min-height:500px;
+  position:relative;
+  overflow:hidden;
+}
+
+.mentor h2{
+  margin:0 0 5px;
+  font-size:20px;
+}
+
+.mentor-sub{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.ai-core{
+  width:105px;
+  height:105px;
+  margin:30px auto 24px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-size:45px;
+  font-weight:900;
+  color:white;
+  background:
+    radial-gradient(circle at 35% 30%,#fff,rgba(255,255,255,.3) 5%,transparent 7%),
+    radial-gradient(circle,var(--violet),#4722a4 55%,transparent 72%);
+  box-shadow:
+    0 0 20px rgba(169,112,255,.8),
+    0 0 70px rgba(66,232,255,.25);
+  animation:corePulse 2.8s ease-in-out infinite;
+}
+
+@keyframes corePulse{
+  0%,100%{transform:scale(1);filter:brightness(1)}
+  50%{transform:scale(1.07);filter:brightness(1.2)}
+}
+
+.mentor-message{
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:17px;
+  padding:16px;
+  line-height:1.55;
+  font-size:14px;
+  min-height:100px;
+}
+
+.mentor-tip{
+  margin-top:16px;
+  color:#bac5df;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.game{
+  padding:26px;
+  min-height:650px;
+}
+
+.fade{
+  animation:fadeIn .4s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.mission-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:var(--cyan);
+  background:rgba(66,232,255,.08);
+  border:1px solid rgba(66,232,255,.18);
+  padding:7px 11px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+
+.game h2{
+  font-size:clamp(25px,4vw,38px);
+  margin:13px 0 8px;
+  letter-spacing:-1px;
+}
+
+.instruction{
+  color:var(--muted);
+  line-height:1.55;
+  margin-bottom:25px;
+}
+
+.question{
+  font-size:22px;
+  line-height:1.45;
+  margin:20px 0;
+}
+
+.answer-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px;
+}
+
+.answer{
+  text-align:left;
+  color:var(--text);
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.11);
+  padding:17px;
+  border-radius:16px;
+  cursor:pointer;
+  transition:.22s;
+  min-height:62px;
+}
+
+.answer:hover{
+  transform:translateY(-2px);
+  border-color:rgba(169,112,255,.65);
+  background:rgba(169,112,255,.08);
+}
+
+.answer.selected{
+  border-color:var(--cyan);
+  background:rgba(66,232,255,.1);
+  box-shadow:0 0 20px rgba(66,232,255,.1);
+}
+
+.answer.correct{
+  border-color:var(--green);
+  background:rgba(77,240,165,.12);
+}
+
+.answer.wrong{
+  border-color:var(--red);
+  background:rgba(255,96,124,.1);
+  animation:shake .35s;
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+}
+
+.control-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:22px;
+}
+
+.primary,.secondary,.hint-btn{
+  border:none;
+  border-radius:14px;
+  padding:13px 20px;
+  cursor:pointer;
+  font-weight:700;
+  transition:.22s;
+}
+
+.primary{
+  color:#07101b;
+  background:linear-gradient(135deg,var(--cyan),var(--turquoise));
+  box-shadow:0 8px 25px rgba(66,232,255,.18);
+}
+
+.primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 30px rgba(66,232,255,.3);
+}
+
+.secondary,.hint-btn{
+  color:var(--text);
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--border);
+}
+
+.secondary:hover,.hint-btn:hover{
+  border-color:rgba(169,112,255,.5);
+}
+
+.feedback{
+  margin-top:20px;
+  padding:16px 18px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.08);
+  display:none;
+  line-height:1.55;
+}
+
+.feedback.show{
+  display:block;
+  animation:fadeIn .3s ease;
+}
+
+.feedback.success{
+  border-color:rgba(77,240,165,.35);
+  background:rgba(77,240,165,.07);
+}
+
+.feedback.error{
+  border-color:rgba(255,96,124,.35);
+  background:rgba(255,96,124,.06);
+}
+
+.feedback-title{
+  font-weight:800;
+  margin-bottom:5px;
+}
+
+.hint{
+  margin-top:12px;
+  color:#c8d3ed;
+  background:rgba(169,112,255,.07);
+  border-left:3px solid var(--violet);
+  padding:12px 14px;
+  border-radius:8px;
+  display:none;
+}
+
+.hint.show{
+  display:block;
+  animation:fadeIn .25s;
+}
+
+.multi-note{
+  color:var(--yellow);
+  font-size:13px;
+  margin-bottom:12px;
+}
+
+.duel{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:20px 0;
+}
+
+.duel-card{
+  padding:20px;
+  border-radius:17px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.09);
+}
+
+.duel-label{
+  color:var(--cyan);
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.duel-text{
+  font-size:20px;
+  line-height:1.5;
+}
+
+.editor-sentence{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  padding:20px;
+  background:rgba(0,0,0,.16);
+  border-radius:18px;
+  border:1px solid var(--border);
+  margin:20px 0;
+}
+
+.word{
+  border:1px solid rgba(255,255,255,.13);
+  background:rgba(255,255,255,.055);
+  color:var(--text);
+  border-radius:10px;
+  padding:9px 12px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.word:hover{
+  border-color:var(--cyan);
+}
+
+.word.marked{
+  background:rgba(255,96,124,.13);
+  border-color:var(--red);
+  text-decoration:line-through;
+  opacity:.7;
+}
+
+.preview{
+  margin-top:12px;
+  padding:13px 16px;
+  background:rgba(66,232,255,.05);
+  border-radius:12px;
+  color:#cdd8f0;
+}
+
+.binary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:25px;
+}
+
+.binary button{
+  min-height:125px;
+  border-radius:20px;
+  color:var(--text);
+  border:1px solid rgba(255,255,255,.11);
+  background:rgba(255,255,255,.045);
+  cursor:pointer;
+  font-size:20px;
+  font-weight:800;
+  transition:.25s;
+}
+
+.binary button:first-child:hover{
+  border-color:var(--green);
+  box-shadow:0 0 30px rgba(77,240,165,.12);
+}
+
+.binary button:last-child:hover{
+  border-color:var(--pink);
+  box-shadow:0 0 30px rgba(255,103,200,.12);
+}
+
+.binary button.correct{
+  border-color:var(--green);
+  background:rgba(77,240,165,.12);
+}
+
+.binary button.wrong{
+  border-color:var(--red);
+  background:rgba(255,96,124,.1);
+  animation:shake .35s;
+}
+
+.author{
+  text-align:center;
+  color:#c5a8ef;
+  font-style:italic;
+  font-size:14px;
+  margin-top:28px;
+  opacity:.9;
+}
+
+.welcome,.final{
+  text-align:center;
+  padding:50px 20px;
+}
+
+.welcome-icon,.final-icon{
+  font-size:75px;
+  margin-bottom:10px;
+  filter:drop-shadow(0 0 25px rgba(66,232,255,.35));
+}
+
+.welcome h2,.final h2{
+  font-size:clamp(32px,6vw,58px);
+  margin:8px 0 12px;
+}
+
+.welcome p,.final p{
+  max-width:720px;
+  margin:0 auto 25px;
+  color:var(--muted);
+  line-height:1.65;
+}
+
+.start-btn{
+  border:none;
+  color:#07101b;
+  background:linear-gradient(135deg,var(--cyan),var(--turquoise));
+  padding:16px 30px;
+  border-radius:16px;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 10px 35px rgba(66,232,255,.2);
+  transition:.25s;
+}
+
+.start-btn:hover{
+  transform:translateY(-3px) scale(1.01);
+  box-shadow:0 15px 45px rgba(66,232,255,.32);
+}
+
+.rules{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  max-width:850px;
+  margin:35px auto 0;
+}
+
+.rule-card{
+  padding:18px;
+  border-radius:17px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+}
+
+.rule-card strong{
+  display:block;
+  margin-bottom:6px;
+}
+
+.rule-card span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.final-score{
+  font-size:70px;
+  font-weight:900;
+  background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.final-stats{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  flex-wrap:wrap;
+  margin:22px 0;
+}
+
+.stat{
+  min-width:150px;
+  padding:17px 25px;
+  border-radius:17px;
+  background:rgba(255,255,255,.045);
+  border:1px solid var(--border);
+}
+
+.stat b{
+  display:block;
+  font-size:25px;
+  margin-bottom:4px;
+}
+
+.stat span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.rule-final{
+  max-width:720px;
+  margin:25px auto;
+  padding:20px;
+  border-radius:18px;
+  background:rgba(169,112,255,.08);
+  border:1px solid rgba(169,112,255,.25);
+  line-height:1.6;
+}
+
+.particle{
+  position:fixed;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:50;
+  animation:particle .9s ease-out forwards;
+}
+
+@keyframes particle{
+  from{
+    opacity:1;
+    transform:translate(0,0) scale(1);
+  }
+  to{
+    opacity:0;
+    transform:translate(var(--x),var(--y)) scale(.2);
+  }
+}
+
+.confetti{
+  position:fixed;
+  width:9px;
+  height:15px;
+  top:-20px;
+  z-index:100;
+  pointer-events:none;
+  animation:confettiFall 3.2s linear forwards;
+}
+
+@keyframes confettiFall{
+  to{
+    transform:translateY(110vh) rotate(720deg);
+    opacity:0;
+  }
+}
+
+.hidden{
+  display:none!important;
+}
+
+@media(max-width:900px){
+  .main{grid-template-columns:1fr}
+  .mentor{min-height:auto}
+  .ai-core{margin:18px auto}
+  .hud{grid-template-columns:1fr}
+}
+
+@media(max-width:650px){
+  .app{width:94vw;padding-top:12px}
+  .topbar{align-items:flex-start}
+  .brand p{display:none}
+  .logo{width:48px;height:48px;font-size:25px}
+  .top-actions{flex-direction:column}
+  .icon-btn,.restart-btn{padding:9px 11px}
+  .route-card{overflow-x:auto}
+  .route{min-width:600px}
+  .game{padding:19px}
+  .answer-grid,.duel,.binary{grid-template-columns:1fr}
+  .question{font-size:19px}
+  .rules{grid-template-columns:1fr}
+  .final-score{font-size:55px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="space"></div>
+<canvas id="stars"></canvas>
+<div class="orb one"></div>
+<div class="orb two"></div>
+<div class="orb three"></div>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">Г</div>
+      <div>
+        <h1>Учимся играя</h1>
+        <p>Интерактивная лаборатория русского языка · Глагол</p>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button class="icon-btn" id="soundBtn" title="Включить/выключить звук">🔊 Звук</button>
+      <button class="restart-btn" id="restartBtn">↻ Начать заново</button>
+    </div>
+  </header>
+
+  <section class="hud">
+    <div class="score-card">
+      <div class="score-label">Текущий результат</div>
+      <div class="score"><span id="score">0</span> / 100</div>
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <div class="route-card">
+      <div class="route" id="route">
+        <div class="route-step active" data-step="0">
+          <div class="route-dot">1</div>
+          <span>Знакомство</span>
+        </div>
+        <div class="route-step" data-step="1">
+          <div class="route-dot">2</div>
+          <span>Миссия 1</span>
+        </div>
+        <div class="route-step" data-step="2">
+          <div class="route-dot">3</div>
+          <span>Миссия 2</span>
+        </div>
+        <div class="route-step" data-step="3">
+          <div class="route-dot">4</div>
+          <span>Миссия 3</span>
+        </div>
+        <div class="route-step" data-step="4">
+          <div class="route-dot">5</div>
+          <span>Миссия 4</span>
+        </div>
+        <div class="route-step" data-step="5">
+          <div class="route-dot">★</div>
+          <span>Финал</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="main">
+
+    <aside class="mentor glass">
+      <h2>AI-наставник</h2>
+      <div class="mentor-sub">Помогаю найти ответ самостоятельно</div>
+
+      <div class="ai-core">А</div>
+
+      <div class="mentor-message" id="mentorMessage">
+        Начни исследование! Вспомни: глагол обозначает действие или состояние предмета.
+      </div>
+
+      <div class="mentor-tip">
+        💡 Если сомневаешься, используй кнопку
+        «Получить наводящий вопрос». Подсказка не выдаёт готовый ответ.
+      </div>
+    </aside>
+
+    <section class="game glass" id="game"></section>
+
+  </main>
+
+</div>
+
+<script>
+/* =========================================================
+   ИГРА «УЧИМСЯ ИГРАЯ — ГЛАГОЛ»
+   Полностью автономный HTML-файл.
+========================================================= */
+
+const missions = [
+  {
+    name:"Миссия 1 · Найди признак",
+    type:"choice",
+    tasks:[
+      {
+        q:"Какое слово является глаголом?",
+        options:["быстрый","читать","книга","весело"],
+        correct:1,
+        explanation:"«Читать» — глагол: он обозначает действие и отвечает на вопрос «что делать?».",
+        hint:"Попробуй задать к каждому слову вопрос: кто? какой? что делать? как?"
+      },
+      {
+        q:"В каком ряду все слова являются глаголами?",
+        options:[
+          "бежать, рисовать, улыбаться",
+          "бег, рисунок, улыбка",
+          "быстрый, рисует, весёлый",
+          "читать, книга, писать"
+        ],
+        correct:0,
+        explanation:"Все три слова — глаголы: бежать, рисовать, улыбаться. Они называют действия.",
+        hint:"Ищи слова, которые можно связать с вопросами «что делать?» или «что сделать?»."
+      },
+      {
+        q:"Какой глагол отвечает на вопрос «что сделать?»",
+        options:["читать","прочитать","читать бы","читает"],
+        correct:1,
+        explanation:"«Прочитать» обозначает завершённое действие и отвечает на вопрос «что сделать?».",
+        hint:"Сравни вопросы «что делать?» и «что сделать?». Какой вариант обозначает завершённость?"
+      },
+      {
+        q:"Укажи глагол в предложении: «Утром птицы громко запели в саду».",
+        options:["утром","птицы","громко","запели"],
+        correct:3,
+        explanation:"«Запели» — глагол. Он обозначает действие птиц.",
+        hint:"Кто? — птицы. Что сделали птицы? Найди слово, которое называет действие."
+      }
+    ]
+  },
+
+  {
+    name:"Миссия 2 · Собери доказательство",
+    type:"multi",
+    tasks:[
+      {
+        q:"Выбери все признаки глагола.",
+        options:[
+          "обозначает действие или состояние",
+          "может отвечать на вопросы что делать? что сделать?",
+          "имеет род во всех формах",
+          "может изменяться по временам",
+          "обозначает предмет"
+        ],
+        correct:[0,1,3],
+        explanation:"Глагол обозначает действие или состояние, отвечает на вопросы «что делать? что сделать?» и может изменяться по временам. Род характерен не для всех форм глагола.",
+        hint:"Вспомни, что обозначает глагол и какие грамматические признаки помогают определить его форму."
+      },
+      {
+        q:"Какие признаки подходят форме «прочитали»?",
+        options:[
+          "прошедшее время",
+          "множественное число",
+          "совершенный вид",
+          "настоящее время",
+          "единственное число"
+        ],
+        correct:[0,1,2],
+        explanation:"«Прочитали» — глагол прошедшего времени, множественного числа, совершенного вида.",
+        hint:"Спроси: действие уже завершилось или происходит сейчас? Сколько исполнителей?"
+      },
+      {
+        q:"Выбери признаки глагола «бежит».",
+        options:[
+          "настоящее время",
+          "единственное число",
+          "совершенный вид",
+          "несовершенный вид",
+          "прошедшее время"
+        ],
+        correct:[0,1,3],
+        explanation:"«Бежит» обозначает действие, происходящее сейчас: настоящее время, единственное число, несовершенный вид.",
+        hint:"Действие происходит сейчас? Можно ли представить его как длительный процесс?"
+      },
+      {
+        q:"Выбери признаки глагола «нарисовать».",
+        options:[
+          "неопределённая форма",
+          "совершенный вид",
+          "прошедшее время",
+          "отвечает на вопрос что сделать?",
+          "множественное число"
+        ],
+        correct:[0,1,3],
+        explanation:"«Нарисовать» — неопределённая форма глагола, совершенный вид, отвечает на вопрос «что сделать?».",
+        hint:"У этой формы нельзя определить время и число. Обрати внимание прежде всего на вопрос."
+      }
+    ]
+  },
+
+  {
+    name:"Миссия 3 · Опасные двойники",
+    type:"duel",
+    tasks:[
+      {
+        a:"Мальчик читает книгу.",
+        b:"Мальчик прочитал книгу.",
+        q:"Чем отличаются формы глагола?",
+        options:[
+          "Первая форма обозначает действие в настоящем времени, вторая — в прошедшем.",
+          "Обе формы стоят в настоящем времени, но имеют разное число.",
+          "Первая форма — неопределённая, вторая — прошедшего времени."
+        ],
+        correct:0,
+        explanation:"«Читает» — настоящее время, «прочитал» — прошедшее время. Кроме времени, различается и вид: читать — несовершенный, прочитать — совершенный.",
+        hint:"Посмотри на момент действия: оно происходит сейчас или уже произошло?"
+      },
+      {
+        a:"Дети рисуют плакат.",
+        b:"Дети нарисуют плакат.",
+        q:"Что изменилось в значении глагола?",
+        options:[
+          "Действие происходит сейчас; во втором предложении действие произойдёт позже.",
+          "Первое действие уже завершено, второе происходит сейчас.",
+          "Глаголы отличаются только числом."
+        ],
+        correct:0,
+        explanation:"«Рисуют» — настоящее время, «нарисуют» — будущее время. В обоих случаях форма относится к множественному числу.",
+        hint:"Задай вопрос: когда происходит действие?"
+      },
+      {
+        a:"Ученики решили задачу.",
+        b:"Ученики решали задачу.",
+        q:"Какое различие наиболее точно?",
+        options:[
+          "«Решили» обозначает завершённое действие, «решали» — действие без указания на завершённость.",
+          "«Решили» — настоящее время, «решали» — будущее.",
+          "Оба глагола обозначают одинаковое по виду действие."
+        ],
+        correct:0,
+        explanation:"«Решили» — совершенный вид: действие представлено как завершённое. «Решали» — несовершенный вид: важен сам процесс.",
+        hint:"Не смотри только на время. Подумай, показано ли действие как завершённое."
+      },
+      {
+        a:"Завтра команда будет выступать.",
+        b:"Завтра команда выступит.",
+        q:"Чем различаются способы выражения будущего времени?",
+        options:[
+          "В первом случае будущее время выражено составной формой, во втором — простой формой.",
+          "В первом случае настоящее время, во втором — прошедшее.",
+          "Оба предложения содержат неопределённую форму глагола."
+        ],
+        correct:0,
+        explanation:"«Будет выступать» — составное будущее время несовершенного вида. «Выступит» — простое будущее время совершенного вида.",
+        hint:"Посмотри, сколько слов участвует в форме сказуемого."
+      }
+    ]
+  },
+
+  {
+    name:"Миссия 4 · Редактор",
+    type:"editor",
+    tasks:[
+      {
+        q:"Удали слово, которое НЕ является глаголом, чтобы оставить только глаголы.",
+        words:["читать","быстро","писать","рисовать"],
+        remove:[1],
+        result:"читать писать рисовать",
+        explanation:"«Быстро» — наречие, а остальные слова являются глаголами.",
+        hint:"Задай к словам вопросы. Глаголы отвечают на вопросы «что делать?» или «что сделать?»."
+      },
+      {
+        q:"Удали слова, которые не относятся к глаголам.",
+        words:["прыгнул","высокий","бегут","снег","улыбнулась"],
+        remove:[1,3],
+        result:"прыгнул бегут улыбнулась",
+        explanation:"«Высокий» — имя прилагательное, «снег» — имя существительное. Остальные слова — глаголы.",
+        hint:"Проверь, какие слова называют действие, а какие — предмет или признак."
+      },
+      {
+        q:"Оставь только глаголы совершенного вида.",
+        words:["прочитать","читать","решить","решать"],
+        remove:[1,3],
+        result:"прочитать решить",
+        explanation:"«Прочитать» и «решить» обозначают завершённое действие. Это глаголы совершенного вида.",
+        hint:"Составь пары: читать — прочитать; решать — решить. Какие формы показывают результат?"
+      },
+      {
+        q:"Оставь только глаголы в прошедшем времени.",
+        words:["играет","построили","напишет","улыбнулся"],
+        remove:[0,2],
+        result:"построили улыбнулся",
+        explanation:"«Построили» и «улыбнулся» обозначают действия, которые уже произошли.",
+        hint:"Ищи действия, которые уже были совершены. Вспомни вопросы прошедшего времени."
+      }
+    ]
+  },
+
+  {
+    name:"Миссия 5 · Финальная сортировка",
+    type:"binary",
+    tasks:[
+      {
+        q:"Форма «пишет» — глагол настоящего времени?",
+        correct:true,
+        explanation:"Да. «Пишет» обозначает действие, которое происходит в настоящий момент."
+      },
+      {
+        q:"Форма «прочитать» — глагол прошедшего времени?",
+        correct:false,
+        explanation:"Нет. «Прочитать» — неопределённая форма глагола. Она отвечает на вопрос «что сделать?» и времени не имеет."
+      },
+      {
+        q:"Форма «сделали» — глагол прошедшего времени множественного числа?",
+        correct:true,
+        explanation:"Да. «Сделали» обозначает уже совершённое действие и относится к множественному числу."
+      },
+      {
+        q:"Форма «будет читать» — простая форма будущего времени?",
+        correct:false,
+        explanation:"Нет. «Будет читать» — составная форма будущего времени: вспомогательный глагол «будет» + неопределённая форма «читать»."
+      }
+    ]
+  }
+];
+
+let state = {
+  screen:"welcome",
+  mission:0,
+  task:0,
+  score:0,
+  answered:0,
+  attempts:0,
+  hints:0,
+  selected:[],
+  editorSelected:[],
+  answeredCurrent:false,
+  sound:true
+};
+
+let audioCtx=null;
+
+const game=document.getElementById("game");
+const mentor=document.getElementById("mentorMessage");
+const scoreEl=document.getElementById("score");
+const progressBar=document.getElementById("progressBar");
+
+function initAudio(){
+  if(!audioCtx){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  }
+  if(audioCtx.state==="suspended") audioCtx.resume();
+}
+
+function tone(freq,duration,type="sine",volume=.06,delay=0){
+  if(!state.sound) return;
+  initAudio();
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+
+  osc.type=type;
+  osc.frequency.setValueAtTime(freq,audioCtx.currentTime+delay);
+  gain.gain.setValueAtTime(0,audioCtx.currentTime+delay);
+  gain.gain.linearRampToValueAtTime(volume,audioCtx.currentTime+delay+.01);
+  gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+delay+duration);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start(audioCtx.currentTime+delay);
+  osc.stop(audioCtx.currentTime+delay+duration+.03);
+}
+
+function clickSound(){
+  tone(500,.06,"sine",.04);
+}
+
+function successSound(){
+  tone(520,.12,"sine",.05);
+  tone(660,.15,"sine",.05,.08);
+  tone(820,.2,"sine",.05,.18);
+}
+
+function errorSound(){
+  tone(180,.16,"sawtooth",.035);
+  tone(130,.18,"sawtooth",.025,.12);
+}
+
+function levelSound(){
+  tone(440,.12,"sine",.05);
+  tone(554,.12,"sine",.05,.12);
+  tone(740,.22,"sine",.06,.24);
+}
+
+function victorySound(){
+  [523,659,784,1047].forEach((f,i)=>tone(f,.25,"sine",.055,i*.13));
+}
+
+document.getElementById("soundBtn").onclick=()=>{
+  state.sound=!state.sound;
+  document.getElementById("soundBtn").textContent=state.sound?"🔊 Звук":"🔇 Звук";
+  if(state.sound) clickSound();
+};
+
+document.getElementById("restartBtn").onclick=()=>{
+  clickSound();
+  resetGame();
+};
+
+function resetGame(){
+  state={
+    screen:"welcome",
+    mission:0,
+    task:0,
+    score:0,
+    answered:0,
+    attempts:0,
+    hints:0,
+    selected:[],
+    editorSelected:[],
+    answeredCurrent:false,
+    sound:state.sound
+  };
+  updateHUD();
+  updateRoute();
+  renderWelcome();
+  mentor.textContent="Начни исследование! Вспомни: глагол обозначает действие или состояние предмета.";
+}
+
+function updateHUD(){
+  scoreEl.textContent=state.score;
+  progressBar.style.width=Math.min(100,state.score)+"%";
+}
+
+function updateRoute(){
+  document.querySelectorAll(".route-step").forEach((el,i)=>{
+    el.classList.remove("active","done");
+
+    if(i < state.mission+1 && state.screen!=="final"){
+      if(i < state.mission+1) el.classList.add("done");
+    }
+
+    if(state.screen==="welcome" && i===0) el.classList.add("active");
+    else if(state.screen==="final" && i===5) el.classList.add("active");
+    else if(state.screen!=="welcome" && state.screen!=="final" && i===state.mission+1) el.classList.add("active");
+  });
+}
+
+function renderWelcome(){
+  game.innerHTML=`
+    <div class="welcome fade">
+      <div class="welcome-icon">⚡</div>
+      <div class="mission-tag">Лаборатория русского языка</div>
+      <h2>Глагол</h2>
+      <p>
+        Тебе предстоит пройти пять разных миссий и исследовать глагол:
+        найти его признаки, собрать доказательства, различить похожие формы,
+        поработать редактором и пройти финальную сортировку.
+      </p>
+
+      <button class="start-btn" id="startBtn">🚀 Начать исследование</button>
+
+      <div class="rules">
+        <div class="rule-card">
+          <strong>🎯 100 баллов</strong>
+          <span>Максимальный результат за всю игру.</span>
+        </div>
+        <div class="rule-card">
+          <strong>💡 Подсказки</strong>
+          <span>Наставник задаёт наводящий вопрос, но не выдаёт ответ.</span>
+        </div>
+        <div class="rule-card">
+          <strong>🧠 Обучение</strong>
+          <span>После каждого задания ты узнаешь, почему ответ верный.</span>
+        </div>
+      </div>
+
+      <div class="author">С уважением, Зина Пернебаевна</div>
+    </div>
+  `;
+
+  document.getElementById("startBtn").onclick=()=>{
+    initAudio();
+    clickSound();
+    state.screen="game";
+    state.mission=0;
+    state.task=0;
+    state.answeredCurrent=false;
+    updateHUD();
+    updateRoute();
+    renderTask();
+  };
+}
+
+function currentTask(){
+  return missions[state.mission].tasks[state.task];
+}
+
+function missionTitle(){
+  return missions[state.mission].name;
+}
+
+function setMentor(text){
+  mentor.textContent=text;
+}
+
+function renderTask(){
+  const mission=missions[state.mission];
+  const task=currentTask();
+
+  state.selected=[];
+  state.editorSelected=[];
+  state.answeredCurrent=false;
+  state.attempts=0;
+
+  updateHUD();
+  updateRoute();
+
+  if(mission.type==="choice") renderChoice(task);
+  if(mission.type==="multi") renderMulti(task);
+  if(mission.type==="duel") renderDuel(task);
+  if(mission.type==="editor") renderEditor(task);
+  if(mission.type==="binary") renderBinary(task);
+}
+
+function baseHeader(title,instruction){
+  return `
+    <div class="fade">
+      <div class="mission-tag">${missionTitle()}</div>
+      <h2>${title}</h2>
+      <div class="instruction">${instruction}</div>
+  `;
+}
+
+function closeBase(){
+  return `</div>`;
+}
+
+function renderChoice(task){
+  game.innerHTML=baseHeader(
+    "Найди признак",
+    "Выбери один вариант. Сначала попробуй определить ответ самостоятельно."
+  )+
+  `<div class="question">${task.q}</div>
+   <div class="answer-grid">
+    ${task.options.map((o,i)=>`
+      <button class="answer" data-index="${i}">${o}</button>
+    `).join("")}
+   </div>
+
+   <div class="feedback" id="feedback"></div>
+   <div class="hint" id="hint"></div>
+
+   <div class="control-row">
+      <button class="hint-btn" id="hintBtn">💡 Получить наводящий вопрос</button>
+      <button class="primary hidden" id="continueBtn">Продолжить →</button>
+   </div>
+  `+closeBase();
+
+  document.querySelectorAll(".answer").forEach(btn=>{
+    btn.onclick=()=>checkChoice(Number(btn.dataset.index),btn);
+  });
+
+  document.getElementById("hintBtn").onclick=showHint;
+  document.getElementById("continueBtn").onclick=nextTask;
+
+  setMentor("На какой вопрос отвечает слово? Попробуй сначала определить часть речи, а затем уточнить её признаки.");
+}
+
+function checkChoice(index,button){
+  if(state.answeredCurrent) return;
+
+  clickSound();
+  state.attempts++;
+
+  if(index===currentTask().correct){
+    state.answeredCurrent=true;
+    const points=state.attempts===1 ? 5 : state.hints>0 ? 3 : 4;
+    addScore(points);
+
+    button.classList.add("correct");
+    showFeedback(true,`✓ Ответ принят · +${points} баллов`,currentTask().explanation);
+    successSound();
+    particles(button);
+
+    document.querySelectorAll(".answer").forEach(b=>b.disabled=true);
+    document.getElementById("hintBtn").classList.add("hidden");
+    document.getElementById("continueBtn").classList.remove("hidden");
+
+    setMentor("Отлично! Теперь обрати внимание на объяснение: именно признак помогает уверенно определить форму глагола.");
+  }else{
+    button.classList.add("wrong");
+    errorSound();
+    showFeedback(false,"Попробуй ещё раз","Ответ пока не принят. Проверь свой ход рассуждения и попробуй другой вариант.");
+    setMentor(currentTask().hint);
+  }
+}
+
+function renderMulti(task){
+  game.innerHTML=baseHeader(
+    "Собери доказательство",
+    "Выбери ВСЕ правильные признаки. Затем нажми «Проверить»."
+  )+
+  `<div class="multi-note">⚠ В этом задании правильных вариантов несколько.</div>
+   <div class="question">${task.q}</div>
+   <div class="answer-grid">
+    ${task.options.map((o,i)=>`
+      <button class="answer" data-index="${i}">${o}</button>
+    `).join("")}
+   </div>
+
+   <div class="feedback" id="feedback"></div>
+   <div class="hint" id="hint"></div>
+
+   <div class="control-row">
+      <button class="primary" id="checkMulti">Проверить</button>
+      <button class="hint-btn" id="hintBtn">💡 Получить наводящий вопрос</button>
+      <button class="primary hidden" id="continueBtn">Продолжить →</button>
+   </div>
+  `+closeBase();
+
+  document.querySelectorAll(".answer").forEach(btn=>{
+    btn.onclick=()=>{
+      if(state.answeredCurrent)return;
+      clickSound();
+      const i=Number(btn.dataset.index);
+
+      if(state.selected.includes(i)){
+        state.selected=state.selected.filter(x=>x!==i);
+        btn.classList.remove("selected");
+      }else{
+        state.selected.push(i);
+        btn.classList.add("selected");
+      }
+    };
+  });
+
+  document.getElementById("checkMulti").onclick=checkMulti;
+  document.getElementById("hintBtn").onclick=showHint;
+  document.getElementById("continueBtn").onclick=nextTask;
+
+  setMentor("Не спеши выбирать всё подряд. Проверь каждый признак отдельно: действительно ли он относится к данной форме глагола?");
+}
+
+function arraysEqual(a,b){
+  return a.length===b.length && a.every(x=>b.includes(x));
+}
+
+function checkMulti(){
+  if(state.answeredCurrent)return;
+
+  state.attempts++;
+  const correct=currentTask().correct;
+
+  if(arraysEqual(state.selected,correct)){
+    state.answeredCurrent=true;
+    const points=state.attempts===1 ? 5 : state.hints>0 ? 3 : 4;
+    addScore(points);
+    successSound();
+    particles(document.getElementById("checkMulti"));
+
+    showFeedback(true,`✓ Ответ принят · +${points} баллов`,currentTask().explanation);
+
+    document.querySelectorAll(".answer").forEach(b=>b.disabled=true);
+    document.getElementById("checkMulti").classList.add("hidden");
+    document.getElementById("hintBtn").classList.add("hidden");
+    document.getElementById("continueBtn").classList.remove("hidden");
+
+    setMentor("Доказательство собрано! Хорошая стратегия — проверять каждый признак отдельно.");
+  }else{
+    errorSound();
+    showFeedback(false,"Попробуй ещё раз","Набор признаков пока не полностью верен. Проверь каждый выбранный вариант.");
+    setMentor(currentTask().hint);
+  }
+}
+
+function renderDuel(task){
+  game.innerHTML=baseHeader(
+    "Опасные двойники",
+    "Сравни две конструкции и выбери наиболее точный анализ."
+  )+
+  `<div class="duel">
+    <div class="duel-card">
+      <div class="duel-label">КОНСТРУКЦИЯ A</div>
+      <div class="duel-text">${task.a}</div>
+    </div>
+    <div class="duel-card">
+      <div class="duel-label">КОНСТРУКЦИЯ B</div>
+      <div class="duel-text">${task.b}</div>
+    </div>
+   </div>
+
+   <div class="question">${task.q}</div>
+
+   <div class="answer-grid">
+    ${task.options.map((o,i)=>`
+      <button class="answer" data-index="${i}">${o}</button>
+    `).join("")}
+   </div>
+
+   <div class="feedback" id="feedback"></div>
+   <div class="hint" id="hint"></div>
+
+   <div class="control-row">
+      <button class="hint-btn" id="hintBtn">💡 Получить наводящий вопрос</button>
+      <button class="primary hidden" id="continueBtn">Продолжить →</button>
+   </div>
+  `+closeBase();
+
+  document.querySelectorAll(".answer").forEach(btn=>{
+    btn.onclick=()=>checkChoice(Number(btn.dataset.index),btn);
+  });
+
+  document.getElementById("hintBtn").onclick=showHint;
+  document.getElementById("continueBtn").onclick=nextTask;
+
+  setMentor("Сравни конструкции буквально: что изменилось во времени, виде или форме глагола?");
+}
+
+function renderEditor(task){
+  game.innerHTML=baseHeader(
+    "Редактор",
+    "Нажимай на слова, которые нужно удалить. В результате должны остаться только подходящие глаголы."
+  )+
+  `<div class="question">${task.q}</div>
+
+   <div class="editor-sentence" id="editorSentence">
+    ${task.words.map((w,i)=>`
+      <button class="word" data-index="${i}">${w}</button>
+    `).join("")}
+   </div>
+
+   <div class="preview">
+     <strong>Результат:</strong>
+     <span id="previewText">${task.words.join(" ")}</span>
+   </div>
+
+   <div class="feedback" id="feedback"></div>
+   <div class="hint" id="hint"></div>
+
+   <div class="control-row">
+      <button class="primary" id="checkEditor">Проверить</button>
+      <button class="hint-btn" id="hintBtn">💡 Получить наводящий вопрос</button>
+      <button class="primary hidden" id="continueBtn">Продолжить →</button>
+   </div>
+  `+closeBase();
+
+  document.querySelectorAll(".word").forEach(btn=>{
+    btn.onclick=()=>{
+      if(state.answeredCurrent)return;
+      clickSound();
+      const i=Number(btn.dataset.index);
+
+      if(state.editorSelected.includes(i)){
+        state.editorSelected=state.editorSelected.filter(x=>x!==i);
+        btn.classList.remove("marked");
+      }else{
+        state.editorSelected.push(i);
+        btn.classList.add("marked");
+      }
+
+      updatePreview(task);
+    };
+  });
+
+  document.getElementById("checkEditor").onclick=checkEditor;
+  document.getElementById("hintBtn").onclick=showHint;
+  document.getElementById("continueBtn").onclick=nextTask;
+
+  setMentor("Представь, что ты редактор. Для каждого слова задай вопрос и определи, подходит ли оно под условие задания.");
+}
+
+function updatePreview(task){
+  const remaining=task.words.filter((_,i)=>!state.editorSelected.includes(i));
+  document.getElementById("previewText").textContent=remaining.join(" ");
+}
+
+function checkEditor(){
+  if(state.answeredCurrent)return;
+
+  state.attempts++;
+  const correct=currentTask().remove;
+
+  if(arraysEqual(state.editorSelected,correct)){
+    state.answeredCurrent=true;
+    const points=state.attempts===1 ? 5 : state.hints>0 ? 3 : 4;
+    addScore(points);
+    successSound();
+    particles(document.getElementById("checkEditor"));
+
+    showFeedback(true,`✓ Ответ принят · +${points} баллов`,currentTask().explanation);
+
+    document.querySelectorAll(".word").forEach(b=>b.disabled=true);
+    document.getElementById("checkEditor").classList.add("hidden");
+    document.getElementById("hintBtn").classList.add("hidden");
+    document.getElementById("continueBtn").classList.remove("hidden");
+
+    setMentor("Редакторская работа выполнена! Ты использовал не угадывание, а признаки слова.");
+  }else{
+    errorSound();
+    showFeedback(false,"Попробуй ещё раз","Проверь каждое слово ещё раз. Возможно, ты удалил лишнее или оставил слово, которое не соответствует условию.");
+    setMentor(currentTask().hint);
+  }
+}
+
+function renderBinary(task){
+  game.innerHTML=baseHeader(
+    "Финальная сортировка",
+    "Определи, подходит ли утверждение. Выбери одну из двух категорий."
+  )+
+  `<div class="question">${task.q}</div>
+
+   <div class="binary">
+      <button id="yes">✓<br><small>ПОДХОДИТ</small></button>
+      <button id="no">✕<br><small>НЕ ПОДХОДИТ</small></button>
+   </div>
+
+   <div class="feedback" id="feedback"></div>
+   <div class="hint" id="hint"></div>
+
+   <div class="control-row">
+      <button class="hint-btn" id="hintBtn">💡 Получить наводящий вопрос</button>
+      <button class="primary hidden" id="continueBtn">Продолжить →</button>
+   </div>
+  `+closeBase();
+
+  document.getElementById("yes").onclick=()=>checkBinary(true);
+  document.getElementById("no").onclick=()=>checkBinary(false);
+  document.getElementById("hintBtn").onclick=showHint;
+  document.getElementById("continueBtn").onclick=nextTask;
+
+  setMentor("Проверь утверждение по правилу. Не ориентируйся только на звучание формы — установи её грамматические признаки.");
+}
+
+function checkBinary(value){
+  if(state.answeredCurrent)return;
+
+  state.attempts++;
+
+  const yes=document.getElementById("yes");
+  const no=document.getElementById("no");
+  const selected=value?yes:no;
+
+  if(value===currentTask().correct){
+    state.answeredCurrent=true;
+    const points=state.attempts===1 ? 5 : state.hints>0 ? 3 : 4;
+    addScore(points);
+    selected.classList.add("correct");
+    successSound();
+    particles(selected);
+
+    showFeedback(true,`✓ Ответ принят · +${points} баллов`,currentTask().explanation);
+
+    yes.disabled=true;
+    no.disabled=true;
+    document.getElementById("hintBtn").classList.add("hidden");
+    document.getElementById("continueBtn").classList.remove("hidden");
+
+    setMentor("Финальная проверка пройдена! Теперь ты умеешь распознавать глагол не только по вопросу, но и по его грамматическим признакам.");
+  }else{
+    selected.classList.add("wrong");
+    errorSound();
+    showFeedback(false,"Попробуй ещё раз","Категория выбрана неверно. Вернись к правилу и проверь, что именно обозначает форма глагола.");
+    setMentor(currentTask().q.includes("прошедшего")
+      ?"Когда произошло действие — сейчас или раньше?"
+      :"Можно ли по форме определить время и число? Сначала установи, что это за форма."
+    );
+  }
+}
+
+function showFeedback(success,title,text){
+  const box=document.getElementById("feedback");
+  box.className="feedback show "+(success?"success":"error");
+  box.innerHTML=`<div class="feedback-title">${title}</div><div>${text}</div>`;
+}
+
+function showHint(){
+  if(state.answeredCurrent)return;
+
+  state.hints++;
+  const box=document.getElementById("hint");
+  box.textContent="💡 Наводящий вопрос: "+currentTask().hint;
+  box.classList.add("show");
+  tone(720,.12,"sine",.035);
+  setMentor(currentTask().hint);
+}
+
+function addScore(points){
+  state.score=Math.min(100,state.score+points);
+  state.answered++;
+  updateHUD();
+}
+
+function nextTask(){
+  clickSound();
+
+  if(state.task < missions[state.mission].tasks.length-1){
+    state.task++;
+    renderTask();
+  }else{
+    if(state.mission < missions.length-1){
+      state.mission++;
+      state.task=0;
+      state.hints=0;
+      levelSound();
+
+      game.style.opacity="0";
+      setTimeout(()=>{
+        game.style.opacity="1";
+        renderTask();
+      },180);
+    }else{
+      finishGame();
+    }
+  }
+}
+
+function finishGame(){
+  state.screen="final";
+  updateRoute();
+  updateHUD();
+  victorySound();
+  confetti();
+
+  let level="";
+  if(state.score>=90) level="Эксперт лаборатории";
+  else if(state.score>=75) level="Уверенный исследователь";
+  else if(state.score>=55) level="Хороший старт";
+  else level="Начинающий исследователь";
+
+  game.innerHTML=`
+    <div class="final fade">
+      <div class="final-icon">🏆</div>
+      <div class="mission-tag">Миссии завершены!</div>
+      <h2>Глагол исследован</h2>
+
+      <div class="final-score">${state.score}/100</div>
+
+      <div class="final-stats">
+        <div class="stat">
+          <b>${state.answered}</b>
+          <span>выполнено заданий</span>
+        </div>
+        <div class="stat">
+          <b>${state.score}</b>
+          <span>набранных баллов</span>
+        </div>
+        <div class="stat">
+          <b>${level}</b>
+          <span>уровень освоения</span>
+        </div>
+      </div>
+
+      <p>
+        Ты прошёл разные типы заданий: распознавал глаголы,
+        собирал доказательства, сравнивал формы, редактировал языковой материал
+        и проверял утверждения.
+      </p>
+
+      <div class="rule-final">
+        <strong>🧠 Главное правило</strong><br>
+        Глагол — самостоятельная часть речи, которая обозначает действие или состояние
+        предмета. Он отвечает на вопросы <strong>что делать? что сделать?</strong>.
+        Глаголы изменяются по временам и числам; в настоящем и будущем времени —
+        по лицам и числам, а в прошедшем времени — по числам и в единственном числе
+        по родам. Глаголы бывают совершенного и несовершенного вида.
+      </div>
+
+      <button class="start-btn" id="againBtn">↻ Пройти ещё раз</button>
+
+      <div class="author">С уважением, Зина Пернебаевна</div>
+    </div>
+  `;
+
+  document.getElementById("againBtn").onclick=()=>{
+    clickSound();
+    resetGame();
+  };
+}
+
+/* Частицы */
+function particles(target){
+  const rect=target.getBoundingClientRect();
+
+  for(let i=0;i<18;i++){
+    const p=document.createElement("div");
+    p.className="particle";
+
+    p.style.left=(rect.left+rect.width/2)+"px";
+    p.style.top=(rect.top+rect.height/2)+"px";
+    p.style.setProperty("--x",(Math.random()*180-90)+"px");
+    p.style.setProperty("--y",(Math.random()*180-90)+"px");
+
+    const colors=["#42e8ff","#39f5c7","#a970ff","#ff67c8","#ffd76a"];
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1000);
+  }
+}
+
+/* Конфетти */
+function confetti(){
+  for(let i=0;i<130;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.animationDelay=(Math.random()*1.5)+"s";
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+
+    const colors=["#42e8ff","#39f5c7","#a970ff","#ff67c8","#ffd76a","#fff"];
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4500);
+  }
+}
+
+/* =========================================================
+   ФОН СО ЗВЁЗДАМИ
+========================================================= */
+
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+
+let stars=[];
+let reducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function resizeStars(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+
+  stars=Array.from({
+    length:reducedMotion?35:100
+  },()=>({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*1.5+.3,
+    a:Math.random()*.6+.15,
+    s:Math.random()*.25+.05
+  }));
+}
+
+function drawStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  stars.forEach(star=>{
+    ctx.beginPath();
+    ctx.arc(star.x,star.y,star.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(190,220,255,${star.a})`;
+    ctx.fill();
+
+    if(!reducedMotion){
+      star.y-=star.s;
+      if(star.y<0){
+        star.y=canvas.height;
+        star.x=Math.random()*canvas.width;
+      }
+    }
+  });
+
+  requestAnimationFrame(drawStars);
+}
+
+window.addEventListener("resize",resizeStars);
+resizeStars();
+drawStars();
+
+/* Запуск */
+renderWelcome();
+updateHUD();
+updateRoute();
+</script>
+
+</body>
+</html>
